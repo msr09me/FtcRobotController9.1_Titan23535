@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+// Drive_Mechanism_v2 is the update of Drive_Mechanism_v1. It enable brakes and adds speed modes.
 
 public class Drive_Mechanism_v2 {
 
@@ -25,27 +28,31 @@ public class Drive_Mechanism_v2 {
 
         // Set the direction of the rotation of the motors
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        /*
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+         */
+
 
     }
 
     public void setDriveMotorPower(double axial, double lateral, double yaw, double speed_percentage)
     {
-
         // Set the power to each DC motor / Wheel
 
         double leftFrontPower = axial + lateral + yaw;
         double rightFrontPower = axial - lateral - yaw;
         double leftBackPower = axial - lateral + yaw;
         double rightBackPower = axial + lateral - yaw;
-
-        leftFrontPower = leftFrontPower * speed_percentage / 100;
-        rightFrontPower = rightFrontPower * speed_percentage / 100;
-        leftBackPower = leftBackPower * speed_percentage / 100;
-        rightBackPower = rightBackPower * speed_percentage / 100;
 
         // Normalize the values so no wheel power exceeds 100%
         // This ensures that the robot maintains the desired motion.
@@ -63,14 +70,18 @@ public class Drive_Mechanism_v2 {
             rightBackPower /= max;
         }
 
+        leftFrontPower = leftFrontPower * speed_percentage / 100;
+        rightFrontPower = rightFrontPower * speed_percentage / 100;
+        leftBackPower = leftBackPower * speed_percentage / 100;
+        rightBackPower = rightBackPower * speed_percentage / 100;
+
         // Send calculated power to wheels
         leftFrontDrive.setPower(leftFrontPower);
         rightFrontDrive.setPower(rightFrontPower);
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
-
-
     }
+
 /*
     public void printInfo(double axial, double lateral, double yaw){
 

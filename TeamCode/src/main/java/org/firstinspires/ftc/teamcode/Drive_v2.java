@@ -2,28 +2,21 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.mechanisms.Drive_Mechanism_v2;
-import org.firstinspires.ftc.teamcode.mechanisms.Climb_Mechanism_v1;
 
-@TeleOp(name = "Drive and Climb", group = "test")
+@TeleOp(name = "Demo Drive", group = "test")
 
 
-public class Drive_v1 extends OpMode
+public class Drive_v2 extends OpMode
 {
     Drive_Mechanism_v2 driveFourDcMotor = new Drive_Mechanism_v2();
-    Climb_Mechanism_v1 climbTwoDcMotor = new Climb_Mechanism_v1();
 
     private ElapsedTime runtime = new ElapsedTime();
 
     String mode = "Very Slow";
 
-    double speed_percentage = 100.0;
-
-    Servo servo;
-    double position = 0.5; // Start at halfway position
-    double angle = 25;
+    double speed_percentage = 25.0;
 
     @Override
     public void init() {
@@ -35,11 +28,6 @@ public class Drive_v1 extends OpMode
         runtime.reset();
 
         driveFourDcMotor.init(hardwareMap);
-        climbTwoDcMotor.init(hardwareMap);
-
-        servo = hardwareMap.get(Servo.class, "servo0");
-
-        telemetry.addData(">", "Press Start to scan Servo." );
 
     }
 
@@ -80,34 +68,12 @@ public class Drive_v1 extends OpMode
 
         driveFourDcMotor.setDriveMotorPower(axial, lateral, yaw, speed_percentage );
 
-        //------------------------------------------------------------------------------------------
-
-
-
-        // Climbing using two Core Hex DC Motor
-
-        // Set the power of climber
-
-        double climber_power = gamepad2.right_trigger - gamepad2.left_trigger;
-
-        climbTwoDcMotor.setClimberMotorPower(climber_power);
-
-
-        //------------------------------------------------------------------------------------------
-
-        // Drone Mechanism
-
-
-
         //------------------------------------------------------------------------------------
 
         // Print Information
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Climber Motor Power", climber_power);
-
         telemetry.addData("Mode",mode);
-        //driveFourDcMotor.printInfo(axial, lateral, yaw);
         telemetry.update();
     }
 

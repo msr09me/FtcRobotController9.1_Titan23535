@@ -4,12 +4,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Auto Demo blue Near", group="Robot")
+@Autonomous(name="Auto Demo Red Far", group="Robot")
 
-public class Auto_demo1 extends LinearOpMode {
+public class Auto_demo4 extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -19,6 +18,12 @@ public class Auto_demo1 extends LinearOpMode {
 
     private ElapsedTime     runtime = new ElapsedTime();
 
+    // Calculate the COUNTS_PER_INCH for your specific drive train.
+    // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
+    // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
+    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
+    // This is gearing DOWN for less speed and more torque.
+    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
     static final double     COUNTS_PER_MOTOR_REV    = 28;    //
     static final double     DRIVE_GEAR_REDUCTION    =  4.0;     // 4:1 External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   =  2.95276;     // For figuring circumference
@@ -37,13 +42,15 @@ public class Auto_demo1 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
 
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-
-
+        // Enable brake
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -74,24 +81,26 @@ public class Auto_demo1 extends LinearOpMode {
 
         /*
             The drive modes are: forward, backward, left, right, turnLeft, turnRight
-
          */
 
-
-        drive("forward", 8, DRIVE_SPEED, 5.0);
-        drive("left", 50, DRIVE_SPEED, 5.0);
-
-        drive("backward",4,DRIVE_SPEED,10.0);
-
-
-
-
+        drive("forward", 13, DRIVE_SPEED, 5.0);
+        drive("left", 35, DRIVE_SPEED, 5.0);
+        drive("backward", 5, DRIVE_SPEED, 5.0);
+        drive("left", 4, DRIVE_SPEED, 5.0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
     }
 
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the OpMode running.
+     */
     public void drive(String driveMode, double distance, double speed, double timeoutS)
     {
 
